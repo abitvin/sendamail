@@ -14,10 +14,10 @@
 		private $subject = false;
 		private $text = false;
 		
-		private $mailHead = '';
-		private $mailBody = '';
-		private $mailBound = array();
-		private $curBound = '';
+		private $mail_head = '';
+		private $mail_body = '';
+		private $mail_bound = array();
+		private $cur_bound = '';
 		
 		
 		
@@ -164,7 +164,7 @@
 				$data = chunk_split( base64_encode( $data ) );
 				$type = $this->getMime( $f['file'] );
 									
-				$this->composeBodyHead( "--{$this->curBound}" );
+				$this->composeBodyHead( "--{$this->cur_bound}" );
 				$this->composeBodyHead( "Content-Type: $type" );
 				$this->composeBodyHead( "Content-Transfer-Encoding: base64" );
 				$this->composeBodyHead( "Content-Disposition: attachment; filename=\"{$f['name']}\"" );
@@ -174,25 +174,25 @@
 		
 		private function composeBegin()
 		{
-			$this->mailHead = '';
-			$this->mailBody = '';
-			$this->mailBound = array();
-			$this->curBound = '';
+			$this->mail_head = '';
+			$this->mail_body = '';
+			$this->mail_bound = array();
+			$this->cur_bound = '';
 		}
 		
 		private function composeBodyHead( $item )
 		{
-			$this->mailBody .= trim( $item ) . $this->eol;
+			$this->mail_body .= trim( $item ) . $this->eol;
 		}
 		
 		private function composeBodyData( $data )
 		{
-			$this->mailBody .= $this->eol . $data . $this->eol . $this->eol;
+			$this->mail_body .= $this->eol . $data . $this->eol . $this->eol;
 		}
 		
 		private function composeBodyMimeMsg( $msg )
 		{
-			$this->mailBody .= $this->eol . trim( $msg ) . $this->eol . $this->eol;
+			$this->mail_body .= $this->eol . trim( $msg ) . $this->eol . $this->eol;
 		}
 		
 		private function composeEmbed()
@@ -210,7 +210,7 @@
 				$data = chunk_split( base64_encode( $data ) );
 				$type = $this->getMime( $f['file'] );
 									
-				$this->composeBodyHead( "--{$this->curBound}" );
+				$this->composeBodyHead( "--{$this->cur_bound}" );
 				$this->composeBodyHead( "Content-Type: $type" );
 				$this->composeBodyHead( "Content-Transfer-Encoding: base64" );
 				$this->composeBodyHead( "Content-ID: <{$f['name']}>" );
@@ -221,12 +221,12 @@
 		
 		private function composeHead( $item )
 		{
-			$this->mailHead .= trim( $item ) . $this->eol;
+			$this->mail_head .= trim( $item ) . $this->eol;
 		}
 		
 		private function composeHTML( $html )
 		{
-			$this->composeBodyHead( "--{$this->curBound}" );
+			$this->composeBodyHead( "--{$this->cur_bound}" );
 			$this->composeBodyHead( "Content-Type: text/html; charset=ISO-8859-1;" );
 			$this->composeBodyHead( "Content-Transfer-Encoding: 7bit" );
 			$this->composeBodyData( $html );
@@ -234,34 +234,34 @@
 		
 		private function composePopBoundary()
 		{
-			$b = array_pop( $this->mailBound );
-			$this->mailBody .= "--$b--{$this->eol}{$this->eol}";
-			$this->curBound = $this->mailBound[ count( $this->mailBound ) - 1 ];
+			$b = array_pop( $this->mail_bound );
+			$this->mail_body .= "--$b--{$this->eol}{$this->eol}";
+			$this->cur_bound = $this->mail_bound[ count( $this->mail_bound ) - 1 ];
 		}
 		
 		private function composePushBoundary( $type )
 		{
 			$b = md5( time() . rand( 0, 7777777 ) );
 			
-			if( count( $this->mailBound ) == 0 )
+			if( count( $this->mail_bound ) == 0 )
 			{
 				$this->composeHead( "Content-Type: multipart/$type; boundary=$b" );
 				$this->composeBodyMimeMsg( 'This is a multi-part message in MIME format.' );
 			}
 			else
 			{
-				$this->composeBodyHead( "--{$this->curBound}" );
+				$this->composeBodyHead( "--{$this->cur_bound}" );
 				$this->composeBodyHead( "Content-Type: multipart/$type; boundary=$b" );
 				$this->composeBodyHead( '' );
 			}
 			
-			$this->curBound = $b;
-			$this->mailBound[] = $b;
+			$this->cur_bound = $b;
+			$this->mail_bound[] = $b;
 		}
 		
 		private function composeText( $text )
 		{
-			$this->composeBodyHead( "--{$this->curBound}" );
+			$this->composeBodyHead( "--{$this->cur_bound}" );
 			$this->composeBodyHead( "Content-Type: text/plain; charset=ISO-8859-1; format=flowed" );
 			$this->composeBodyHead( "Content-Transfer-Encoding: 7bit" );
 			$this->composeBodyData( $text );
@@ -365,7 +365,7 @@
 			return $this->sendMail();
 		}
 		
-		public function sendMail()
+		public function send()
 		{
 			if( !$from = $this->cleanUp( $this->from ) ) {
 				return $this->error( 'No from address.' );
@@ -388,6 +388,9 @@
 			
 			if( !$text ) {
 				$text = strip_tags( $this->br2nl( $html ) );
+			}
+			elseif( !$html ) {
+				$html = str_replace( "\n", "<br />", str_replace( "\r", '', $text ) );
 			}
 			
 			
@@ -414,14 +417,7 @@
 			$this->composeHead( 'MIME-Version: 1.0' );
 			
 			
-			if( $text && !$html )
-			{
-				$this->composePushBoundary( 'mixed' );
-				$this->composeText( $text );
-				$this->composeAttach();
-				$this->composePopBoundary();
-			}
-			elseif( $this->attach && $this->embed )
+			if( $this->attach && $this->embed )
 			{
 				$this->composePushBoundary( 'mixed' );
 				$this->composePushBoundary( 'alternative' );
@@ -472,7 +468,7 @@
 			
 			
 			ini_set( "sendmail_from", $from ); 
-			$ok = mail( $to, $subject, $this->mailBody, $this->mailHead, $addi );
+			$ok = mail( $to, $subject, $this->mail_body, $this->mail_head, $addi );
 			ini_restore( "sendmail_from" );
 			
 			if( !$ok ) {
@@ -481,14 +477,14 @@
 			
 			if( $f = fopen( 'dump.txt', 'wb' ) )
 			{
-				fwrite( $f, "To: $to{$this->eol}{$this->mailHead}{$this->mailBody}" );
+				fwrite( $f, "To: $to{$this->eol}{$this->mail_head}{$this->mail_body}" );
 				fclose( $f );
 			}
 			
 			return $ok;
 		}
 		
-		public function sendMailProxy( $url = false )
+		public function sendProxy( $url = false )
 		{
 			$eol = $this->eol;
 			$d = '';

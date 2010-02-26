@@ -1,0 +1,15 @@
+
+2010-02-03  Vincent van Ingen  v0.2
+
+	* Added: Examples
+	* Change: sendMail() to send()
+	* Change: sendProxyMail() to sendProxy()
+	* Change: send() will now create a html from a text message
+	
+
+
+
+2009-12-19  Vincent van Ingen  v0.1
+
+	* Initial release, golly!
+	
