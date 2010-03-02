@@ -362,7 +362,7 @@
 				$this->embed( $_FILES["sendmailproxy_embed_$i"] ); $i++;
 			}
 			
-			return $this->sendMail();
+			return $this->send();
 		}
 		
 		public function send()

@@ -1,0 +1,83 @@
+SENDAMAIL PHP CLASS
+
+
+
+About
+-----
+SendAMail is an easy to use yet powerful send e-mail class for PHP. I created
+this class for a number of reasons. The mail() function was not enough; I was
+tired creating a custom mail function per project; The mail classes/library's
+I found on the internet where to bloated or to feature rich; I like coding and
+want to know what's under the hood :)
+
+Some note is that I wanted some sort of a proxy mailer. This is the only
+'extra' feature this class have above the standard functions you expect to have
+from a e-mail sender. If you send a newsletter it could be a pain in the arse.
+I've stumbled on the thing that Yahoo doesn't like my e-mail, sending from a
+webserver I used. But from a other webserver it just works great! So I needed
+to create something that creates a mail on server X en sends it from server Y.
+So the sendProxy() en proxy() functions where born! 
+
+
+
+Features
+--------
+
+	- plain text/html mail combined
+	- multiple to's, cc's, bcc's
+	- bounce mail
+	- attach files, like pdf's or zip files
+	- embed files, like images for newsletters
+	- proxy mailer
+
+
+
+Documentation
+-------------
+The code is pretty self explonational.
+Just look in the examples directory.
+These are the list with functions you can use.
+
+	- attach( $_FILES[] or $file )	// attach a file
+	- bcc( <string> )		// add a blind carbon copy
+	- bounce( <string> )		// bounce mail
+	- cc( <string> )		// add a carbon copy
+	- embed( $_FILES[] or $file )	// embed a file into the e-mail
+	- eol( <string> )		// change the EOL, default "\n"
+	- from( <string> )		// senders e-mail address
+	- html( <string> )		// html for the body
+	- proxy()			// for the e-mail proxy reciever
+	- send()			// sends the e-mail
+	- sendProxy()			// sends the e-mail trough the proxy
+	- subject( <string> )		// subject of the e-mail
+	- text( <string )		// plain text for the body
+	- to( <string> )		// add a recipient
+	
+Important note: Every execution of a to(), bcc() or cc() will add it to the
+list. But there's no reset/clear function to empty the lists. You need to
+create a new SendAMail class. 
+
+Important note: Don't think you can just sending thousands of mail at once!
+This is not my fault. Your webserver is! Most webservers do have a limit of
+to's, cc's or bcc's. A limit of 50 per time would be good.
+
+
+
+License
+-------
+Don't be scared, I use the WTFPL license.
+It means you can do ANYTHING with this code!
+
+For more info about this license:
+http://sam.zoy.org/wtfpl/
+http://en.wikipedia.org/wiki/WTFPL
+
+
+
+Contact
+-------
+You liked my code? Great! Leave me a message, I like messages :)
+
+Titter: http://twitter.com/VinIngine
+Github: http://github.com/VinIngine
+Blog: http://vin.ingine.nl

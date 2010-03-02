@@ -1,5 +1,11 @@
+2010-03-02  Vincent van Ingen  v0.7
 
-2010-02-03  Vincent van Ingen  v0.2
+	* Added: A readme file
+	* Added: A todo file
+	* Added: The WTFPL license, just to make it complete ;)
+	* Bugfix: proxy() used sendMail(), changed to send()
+
+2010-02-03  Vincent van Ingen  v0.5
 
 	* Added: Examples
 	* Change: sendMail() to send()
