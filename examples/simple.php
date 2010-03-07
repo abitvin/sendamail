@@ -15,12 +15,12 @@
 		$m->to( $_POST['to'] );
 		$m->subject( $_POST['subject'] );
 		$m->text( $_POST['text'] );
-		
+				
 		if( $m->send() ) {
 			echo "Your message has been send :)";
 		}
 		else {
-			echo "Whoops! {$m->error}";
+			echo "<p>Error: {$m->error}";
 		}
 	}
 	else
