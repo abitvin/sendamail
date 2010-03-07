@@ -1,9 +1,17 @@
-2010-03-02  Vincent van Ingen  v0.7
+2010-03-07  Vincent van Ingen  v0.5.2
+
+	* Updated: Examples
+
+
+
+2010-03-02  Vincent van Ingen  v0.5.1
 
 	* Added: A readme file
 	* Added: A todo file
 	* Added: The WTFPL license, just to make it complete ;)
 	* Bugfix: proxy() used sendMail(), changed to send()
+
+
 
 2010-02-03  Vincent van Ingen  v0.5
 
@@ -11,7 +19,6 @@
 	* Change: sendMail() to send()
 	* Change: sendProxyMail() to sendProxy()
 	* Change: send() will now create a html from a text message
-	
 
 
 
